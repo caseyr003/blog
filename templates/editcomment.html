@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+ {% if comment.user_id == user_id %}
+ <div class="post">
+   <div class="post-heading">
+      <form method="post">
+         <textarea name="comment"
+         style="height: 100px; width: 400px;">{{comment.comment}}</textarea>
+         <br>
+         <input type="submit">
+      </form>
+      <form action="../deletecomment/{{comment.key().id()}}" method="POST">
+         <div class="form-group row">
+           <input class="btn btn-danger" type="submit" value="Delete">
+         </div>
+      </form>
+   </div>
+</div>
+ {% endif %}
+{% endblock %}

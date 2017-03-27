@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="post">
+  <div class="post-heading">
+    <div class="post-title">
+      <a href="/post/{{post.key().id()}}">{{post.subject}}</a>
+    </div>
+
+    <div class="post-date">
+      {{post.created.strftime("%b %d, %Y")}}
+    </div>
+  </div>
+
+  <div class="post-content">
+    {{post.content}}
+  </div>
+  <div>Likes: {{like_count}}</div>
+  {% if liked %}
+     <form action="../unlike/{{post.key().id()}}" method="POST">
+        <div class="form-group row">
+         <input class="btn btn-danger" type="submit" value="UnLike">
+        </div>
+    </form>
+  {% else %}
+     <form action="../like/{{post.key().id()}}" method="POST">
+        <div class="form-group row">
+         <input class="btn btn-danger" type="submit" value="Like">
+        </div>
+   </form>
+  {% endif %}
+  {% if post.creator_id == user_id %}
+     <a class="login-link" href="/edit/{{post.key().id()}}">edit</a>
+  {% endif %}
+  <hr>
+  Comments:
+  <div class="post-content">
+    {% for comment in comments %}
+      <div>{{comment.comment}}
+         {% if comment.user_id == user_id %}
+            <a class="login-link" href="/editcomment/{{comment.key().id()}}">edit</a>
+         {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+  <hr>
+
+
+</div>
+<form action="../newcomment/{{post.key().id()}}" method="post">
+  <label>
+    <div>Add a comment</div>
+    <input name="comment"></input>
+  </label>
+
+  <div class="error">{{error}}</div>
+
+  <input type="submit">
+</form>
+{% endblock %}
