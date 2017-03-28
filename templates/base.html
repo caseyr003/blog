@@ -8,27 +8,31 @@
       <!-- Title -->
       <title>Blog | Blog for Full Stack Web Developer</title>
 
+      <base href="/">
+
       <!-- Add CSS from minified file -->
-      <link type="text/css" rel="stylesheet" href="/static/css/main.css" />
+      <link href="https://fonts.googleapis.com/css?family=PT+Sans+Caption" rel="stylesheet">
       <link type="text/css" rel="stylesheet" href="/static/css/bootstrap.css" />
+      <link type="text/css" rel="stylesheet" href="/static/css/font-awesome.css" />
+      <link type="text/css" rel="stylesheet" href="/static/css/style.css" />
    </head>
 
    <body>
-      <header class="container-fluid">
+      <header class="container">
          <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-10 col-md-offset-1">
 
-               <a href="/" class="main-title">
-                 Blog
+               <a href="/" class="nav-title">
+                 <img class="logo" src="static/img/logo.png" alt="The Blog Logo">
                </a>
 
-               <div class="login-area">
+               <div class="nav-login">
                  {% if user %}
-                   {{user.name}} (<a class="login-link" href="/logout">logout</a>)
+                   {{user.name}} | <a class="login-link" href="/logout">Logout</a>
                  {% else %}
-                   <a class="login-link" href="/login">login</a>
+                   <a class="login-link" href="/login">Login</a>
                    |
-                   <a class="login-link" href="/signup">signup</a>
+                   <a class="login-link" href="/signup">Signup</a>
                  {% endif %}
                </div>
 
@@ -36,7 +40,7 @@
          </div>
       </header>
 
-      <div class="container-fluid">
+      <div class="container">
          <div class="row">
             <div class="col-md-12">
 

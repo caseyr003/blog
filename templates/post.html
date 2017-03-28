@@ -1,64 +1,61 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="post">
-  <div class="post-heading">
-    <div class="post-title">
-      <a href="/post/{{post.key().id()}}">{{post.subject}}</a>
-    </div>
 
-    <div class="post-date">
-      {{post.created.strftime("%b %d, %Y")}}
-    </div>
-  </div>
 
-  <div class="post-content">
-    {{post.content}}
-  </div>
-  <div>Likes: {{like_count}}</div>
-  {% if user_id != '' %}
-     {% if liked %}
-        <form action="../unlike/{{post.key().id()}}" method="POST">
-           <div class="form-group row">
-            <input class="btn btn-danger" type="submit" value="UnLike">
+      <div class="col-md-8 col-md-offset-2">
+         <div class="post-container">
+           <div class="post-heading">
+             <div class="post-title">
+               <a href="/post/{{post.key().id()}}">{{post.subject}}</a>
+             </div>
+
+             <div class="post-date">
+               {{post.created.strftime("%b %d, %Y")}}
+             </div>
            </div>
-       </form>
-     {% else %}
-        <form action="../like/{{post.key().id()}}" method="POST">
-           <div class="form-group row">
-            <input class="btn btn-danger" type="submit" value="Like">
+
+           <div class="post-content">
+             {{post.content}}
            </div>
-      </form>
-     {% endif %}
-  {% endif %}
-  {% if post.creator_id == user_id %}
-     <a class="login-link" href="/edit/{{post.key().id()}}">edit</a>
-  {% endif %}
-  <hr>
-  Comments:
-  <div class="post-content">
-    {% for comment in comments %}
-      <div>{{comment.content}}
-         {% if comment.user_id == user_id %}
-            <a class="login-link" href="/editcomment/{{comment.key().id()}}">edit</a>
-         {% endif %}
+           {% if user_id != '' %}
+              {% if liked %}
+                 <form action="../unlike/{{post.key().id()}}" method="POST">
+                    <div class="form-group row">
+                     <button class="like-btn" type="submit" value=""><i class="fa fa-thumbs-up" aria-hidden="true"></i></button>{{like_count}}
+                    </div>
+                </form>
+              {% else %}
+                 <form action="../like/{{post.key().id()}}" method="POST">
+                    <div class="form-group row">
+                     <button class="like-btn" type="submit"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></button>{{like_count}}
+                    </div>
+               </form>
+              {% endif %}
+           {% endif %}
+           {% if post.creator_id == user_id %}
+              <a class="edit-link" href="/edit/{{post.key().id()}}">edit</a>
+           {% endif %}
+           <div class="comment-content">
+             {% for comment in comments %}
+               <div>{{comment.content}}
+                  {% if comment.user_id == user_id %}
+                     <a class="edit-link" href="/editcomment/{{comment.key().id()}}">edit</a>
+                  {% endif %}
+                  <hr>
+               </div>
+             {% endfor %}
+           </div>
+           {% if user_id != '' %}
+           <div class="add-comment">
+              <form action="../newcomment/{{post.key().id()}}" method="post">
+                  <textarea class="comment-text" name="content" placeholder="Leave a comment..."></textarea>
+                  <button class="comment-btn" type="submit"><i class="fa fa-comments-o" aria-hidden="true"></i></button>
+                  <div class="error">{{error}}</div>
+              </form>
+           </div>
+           {% endif %}
+         </div>
       </div>
-    {% endfor %}
-  </div>
-  <hr>
 
-
-</div>
-{% if user_id != '' %}
-<form action="../newcomment/{{post.key().id()}}" method="post">
-  <label>
-    <div>Add a comment</div>
-    <input name="content"></input>
-  </label>
-
-  <div class="error">{{error}}</div>
-
-  <input type="submit">
-</form>
-{% endif %}
 {% endblock %}

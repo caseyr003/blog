@@ -1,30 +1,51 @@
 {% extends "base.html" %}
 
 {% block content %}
-   <a href="/newpost">Create a new post</a>
-   <br><br>
+   <div class="col-md-10 col-md-offset-1">
+      <a class="create-post-link" href="/newpost">Create a new post</a>
+   </div>
   {% for post in posts %}
-  <div class="post">
-    <div class="post-heading">
-      <div class="post-title">
-        <a href="/post/{{post.key().id()}}">{{post.subject}}</a>
+  <div class="col-md-10 col-md-offset-1">
+     <div class="post-container">
+      <div class="post-heading">
+        <div class="post-title">
+           <a class="post-title-link" href="/post/{{post.key().id()}}">{{post.subject}}</a>
+           {{post.get_user()}}
+        </div>
+
+      </div>
+
+      <div class="post-content">
+        {{post.content}}
       </div>
 
       <div class="post-date">
-        {{post.created.strftime("%b %d, %Y")}}
+         {{post.created.strftime("%b %d, %Y")}}
       </div>
-    </div>
-
-    <div class="post-content">
-      {{post.content}}
-    </div>
-
-     {% if post.creator_id == user_id %}
-        <a class="login-link" href="/edit/{{post.key().id()}}">edit</a>
-     {% endif %}
-
-
-  </div>
+      <div class="post-date">
+        {{post.comment_count()}} Comments
+      </div>
+      <div class="post-like">
+      {% if user_id != '' %}
+          {% if post.like_count(user_id)[1] %}
+             <form action="../unlike/{{post.key().id()}}" method="POST">
+                <div class="form-group row">
+                 <button class="like-btn" type="submit" value=""><i class="fa fa-thumbs-up" aria-hidden="true"></i></button>{{post.like_count(user_id)[0]}}
+                </div>
+           </form>
+          {% else %}
+             <form action="../like/{{post.key().id()}}" method="POST">
+                <div class="form-group row">
+                 <button class="like-btn" type="submit"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></button>{{post.like_count(user_id)[0]}}
+                </div>
+           </form>
+          {% endif %}
+      {% else %}
+      <a class="like-btn like-btn-link" href="/login"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></a>{{post.like_count(user_id)[0]}}
+      {% endif %}
+   </div>
+     </div>
+ </div>
   {% endfor %}
 
 {% endblock %}
