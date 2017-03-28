@@ -14,7 +14,8 @@ template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
                                autoescape = True)
 
-secret = 'fart'
+secret = 'GLK37HU92HJ3K244LJS'
+
 
 def render_str(template, **params):
     t = jinja_env.get_template(template)
@@ -123,18 +124,10 @@ class Post(db.Model):
     creator_id = db.StringProperty(required = True)
     last_modified = db.DateTimeProperty(auto_now = True)
 
-    def render(self):
-        self._render_text = self.content.replace('\n', '<br>')
-        return render_str("post.html", p = self)
-
-    def render2(self):
-        self._render_text = self.content.replace('\n', '<br>')
-        return render_str("edit.html", p = self)
-
 
 class Comment(db.Model):
     post_id = db.StringProperty(required = True)
-    comment = db.TextProperty(required = True)
+    content = db.TextProperty(required = True)
     created = db.DateTimeProperty(auto_now_add = True)
     user_id = db.StringProperty(required = True)
     last_modified = db.DateTimeProperty(auto_now = True)
@@ -148,14 +141,21 @@ class Like(db.Model):
 class Blog(BlogHandler):
     def get(self):
         posts = greetings = Post.all().order('-created')
-        user_id = str(self.user.key().id())
+        user_id = ''
+
+        if self.user:
+            user_id = str(self.user.key().id())
+
         self.render('front.html', posts = posts, user_id = user_id)
 
 class PostPage(BlogHandler):
     def get(self, post_id):
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
         post = db.get(key)
-        user_id = str(self.user.key().id())
+        user_id = ''
+
+        if self.user:
+            user_id = str(self.user.key().id())
 
         comments = Comment.all()
         comments.filter("post_id =", post_id)
@@ -253,29 +253,22 @@ class EditCommentPage(BlogHandler):
         comment = db.get(key)
         user_id = str(self.user.key().id())
 
-        print("****************")
-        print("****************")
-        print("****************")
-        print(user_id)
-        print("****************")
-        print("****************")
-        print("****************")
-
         if not self.user:
             self.redirect('/')
 
-        content = self.request.get('comment')
+        content = self.request.get('content')
 
         if comment:
             if user_id == comment.user_id:
-                comment.comment = content
+                comment.content = content
 
                 comment.put()
 
                 return self.redirect('/post/%s' % str(comment.post_id))
         else:
-            error = "subject and content, please!"
-            self.render("edit.html", subject=subject, content=content, error=error)
+            self.redirect('/post/%s' % str(comment.post_id))
+            # error = "subject and content, please!"
+            # self.render("edit.html", subject=subject, content=content, error=error)
 
 
         if not post:
@@ -310,19 +303,21 @@ class NewCommentPage(BlogHandler):
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
         post = db.get(key)
         user_id = str(self.user.key().id())
+        content = self.request.get('content')
 
         if not self.user:
             self.redirect('/')
 
-        comment = self.request.get('comment')
+        content = self.request.get('content')
 
-        if comment and user_id:
-            comment = Comment(parent = blog_key(), comment = comment, post_id = post_id, user_id = user_id)
+        if content and user_id:
+            comment = Comment(parent = blog_key(), content = content, post_id = post_id, user_id = user_id)
             comment.put()
             self.redirect('/post/%s' % str(post.key().id()))
         else:
-            error = "subject and content, please!"
-            self.render("newpost.html", subject=subject, content=content, user = user, error=error)
+            self.redirect('/post/%s' % str(post.key().id()))
+            # error = "subject and content, please!"
+            # self.render("newpost.html", subject=subject, content=content, user = user, error=error)
 
 
 class LikePage(BlogHandler):
@@ -338,15 +333,16 @@ class LikePage(BlogHandler):
         user_id = str(self.user.key().id())
 
         if not self.user:
-            self.redirect('/')
+            self.redirect('/post/%s' % str(post.key().id()))
 
         if user_id:
             like = Like(parent = blog_key(), post_id = post_id, user_id = user_id)
             like.put()
             self.redirect('/post/%s' % str(post.key().id()))
         else:
-            error = "subject and content, please!"
-            self.render("newpost.html", subject=subject, content=content, user = user, error=error)
+            self.redirect('/post/%s' % str(post.key().id()))
+            # error = "subject and content, please!"
+            # self.render("newpost.html", subject=subject, content=content, user = user, error=error)
 
 
 class RemoveLikePage(BlogHandler):
@@ -366,7 +362,7 @@ class RemoveLikePage(BlogHandler):
         likes.filter("user_id =", user_id)
 
         if not self.user:
-            self.redirect('/')
+            self.redirect('/post/%s' % str(post.key().id()))
 
         if user_id:
             for like in likes:
@@ -374,8 +370,9 @@ class RemoveLikePage(BlogHandler):
                 print("test")
             self.redirect('/post/%s' % str(post.key().id()))
         else:
-            error = "subject and content, please!"
-            self.render("newpost.html", subject=subject, content=content, user = user, error=error)
+            self.redirect('/post/%s' % str(post.key().id()))
+            # error = "subject and content, please!"
+            # self.render("newpost.html", subject=subject, content=content, user = user, error=error)
 
 
 class NewPost(BlogHandler):
@@ -501,6 +498,7 @@ app = webapp2.WSGIApplication([('/?', Blog),
                                ('/newpost', NewPost),
                                ('/signup', Register),
                                ('/login', Login),
+                               ('/logout', Logout),
                                ('/logout', Logout),
                                ],
                               debug=True)

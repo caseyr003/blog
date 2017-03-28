@@ -16,18 +16,20 @@
     {{post.content}}
   </div>
   <div>Likes: {{like_count}}</div>
-  {% if liked %}
-     <form action="../unlike/{{post.key().id()}}" method="POST">
-        <div class="form-group row">
-         <input class="btn btn-danger" type="submit" value="UnLike">
-        </div>
-    </form>
-  {% else %}
-     <form action="../like/{{post.key().id()}}" method="POST">
-        <div class="form-group row">
-         <input class="btn btn-danger" type="submit" value="Like">
-        </div>
-   </form>
+  {% if user_id != '' %}
+     {% if liked %}
+        <form action="../unlike/{{post.key().id()}}" method="POST">
+           <div class="form-group row">
+            <input class="btn btn-danger" type="submit" value="UnLike">
+           </div>
+       </form>
+     {% else %}
+        <form action="../like/{{post.key().id()}}" method="POST">
+           <div class="form-group row">
+            <input class="btn btn-danger" type="submit" value="Like">
+           </div>
+      </form>
+     {% endif %}
   {% endif %}
   {% if post.creator_id == user_id %}
      <a class="login-link" href="/edit/{{post.key().id()}}">edit</a>
@@ -36,7 +38,7 @@
   Comments:
   <div class="post-content">
     {% for comment in comments %}
-      <div>{{comment.comment}}
+      <div>{{comment.content}}
          {% if comment.user_id == user_id %}
             <a class="login-link" href="/editcomment/{{comment.key().id()}}">edit</a>
          {% endif %}
@@ -47,14 +49,16 @@
 
 
 </div>
+{% if user_id != '' %}
 <form action="../newcomment/{{post.key().id()}}" method="post">
   <label>
     <div>Add a comment</div>
-    <input name="comment"></input>
+    <input name="content"></input>
   </label>
 
   <div class="error">{{error}}</div>
 
   <input type="submit">
 </form>
+{% endif %}
 {% endblock %}
