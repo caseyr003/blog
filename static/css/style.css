@@ -33,16 +33,17 @@ body {
 }
 
 .edit-link {
-    color: gray;
+    color: #999;
     text-decoration: none;
 }
 
 .edit-link:visited {
-    color: gray;
+    color: #999;
 }
 
 .edit-link:hover {
     text-decoration: underline;
+    color: #387795;
 }
 
 h2 {
@@ -76,6 +77,7 @@ input[type=submit] {
 .post-title {
    font-size: 18px;
    color: #6A6A6A;
+   margin-bottom: 20px;
 
 }
 
@@ -106,7 +108,15 @@ input[type=submit] {
 .comment-content {
     padding: 6px;
     font-size: 14px;
-    border-left: 2px solid #333;
+}
+
+.comment-user {
+   color: #387795;
+}
+
+.comment-message {
+   font-size: 16px;
+   color: #727272;
 }
 
 .post-container {
@@ -156,6 +166,40 @@ input[type=submit] {
    color: #60A7C8;
    cursor: pointer;
 }
+
+.cancel-link {
+   color: #999;
+}
+
+.cancel-link:hover {
+   color: #387795;
+   text-decoration: none;
+}
+
+.edit-title {
+   margin: 20px 0;
+   font-size: 24px;
+}
+
+
+.delete-btn {
+   display: inline-block;
+   font-size: 18px;
+   margin-left: 10px;
+   background-color: transparent;
+   border: none;
+   transition: all 0.3s ease;
+}
+.delete-btn:focus {
+   outline: none;
+}
+.delete-btn:hover {
+   color: #AD5E68;
+   cursor: pointer;
+}
+
+
+
 
 .comment-btn {
    position: relative;

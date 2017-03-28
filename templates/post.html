@@ -2,60 +2,95 @@
 
 {% block content %}
 
+   <div class="col-md-10 col-md-offset-1">
+      <div class="post-container">
+         <div class="post-heading">
+            <div class="post-title">
+               <a class="post-title-link" href="/post/{{post.key().id()}}">{{post.subject}}</a>
+               {{post.get_user()}}
+               {% if post.creator_id == user_id %}
+                  <a class="edit-link" href="/edit/{{post.key().id()}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+               {% endif %}
+            </div>
+         </div>
 
-      <div class="col-md-8 col-md-offset-2">
-         <div class="post-container">
-           <div class="post-heading">
-             <div class="post-title">
-               <a href="/post/{{post.key().id()}}">{{post.subject}}</a>
-             </div>
+         <div class="post-content">
+            {{post.content}}
+         </div>
 
-             <div class="post-date">
-               {{post.created.strftime("%b %d, %Y")}}
-             </div>
-           </div>
+         <div class="post-date">
+            {{post.created.strftime("%b %d, %Y")}}
+         </div>
 
-           <div class="post-content">
-             {{post.content}}
-           </div>
-           {% if user_id != '' %}
-              {% if liked %}
-                 <form action="../unlike/{{post.key().id()}}" method="POST">
-                    <div class="form-group row">
-                     <button class="like-btn" type="submit" value=""><i class="fa fa-thumbs-up" aria-hidden="true"></i></button>{{like_count}}
-                    </div>
-                </form>
-              {% else %}
-                 <form action="../like/{{post.key().id()}}" method="POST">
-                    <div class="form-group row">
-                     <button class="like-btn" type="submit"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></button>{{like_count}}
-                    </div>
-               </form>
-              {% endif %}
-           {% endif %}
-           {% if post.creator_id == user_id %}
-              <a class="edit-link" href="/edit/{{post.key().id()}}">edit</a>
-           {% endif %}
-           <div class="comment-content">
-             {% for comment in comments %}
-               <div>{{comment.content}}
-                  {% if comment.user_id == user_id %}
-                     <a class="edit-link" href="/editcomment/{{comment.key().id()}}">edit</a>
-                  {% endif %}
-                  <hr>
+         <div class="post-date">
+            {{post.comment_count()}} Comments
+         </div>
+
+         <div class="post-like">
+            {% if user_id != '' %}
+
+               {% if post.like_count(user_id)[1] %}
+                  <form action="../unlike/{{post.key().id()}}" method="POST">
+                     <div class="form-group row">
+                        <button class="like-btn" type="submit" value="">
+                           <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                        </button>
+                        {{post.like_count(user_id)[0]}}
+                     </div>
+                  </form>
+
+               {% else %}
+                  <form action="../like/{{post.key().id()}}" method="POST">
+                     <div class="form-group row">
+                        <button class="like-btn" type="submit">
+                           <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+                        </button>
+                        {{post.like_count(user_id)[0]}}
+                     </div>
+                  </form>
+
+               {% endif %}
+            {% else %}
+               <a class="like-btn like-btn-link" href="/login">
+                  <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+               </a>
+               {{post.like_count(user_id)[0]}}
+            {% endif %}
+         </div>
+         <hr>
+
+         <div class="comment-content">
+            {% for comment in post.get_comments() %}
+               <div class="comment-user">
+                  {{comment.get_user()}}
                </div>
-             {% endfor %}
-           </div>
-           {% if user_id != '' %}
-           <div class="add-comment">
-              <form action="../newcomment/{{post.key().id()}}" method="post">
+
+               <div class="comment-message">
+                  {{comment.content}}
+                  {% if comment.user_id == user_id %}
+                     <a class="edit-link" href="/editcomment/{{comment.key().id()}}">
+                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                     </a>
+                  {% endif %}
+               </div>
+
+               <div class="post-date">
+                  {{comment.created.strftime("%b %d, %Y")}}
+               </div>
+
+               <hr>
+            {% endfor %}
+         </div>
+
+         {% if user_id != '' %}
+            <div class="add-comment">
+               <form action="../newcomment/{{post.key().id()}}" method="post">
                   <textarea class="comment-text" name="content" placeholder="Leave a comment..."></textarea>
                   <button class="comment-btn" type="submit"><i class="fa fa-comments-o" aria-hidden="true"></i></button>
                   <div class="error">{{error}}</div>
-              </form>
-           </div>
-           {% endif %}
-         </div>
+               </form>
+            </div>
+         {% endif %}
       </div>
-
+   </div>
 {% endblock %}

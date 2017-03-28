@@ -169,6 +169,10 @@ class Comment(db.Model):
     user_id = db.StringProperty(required = True)
     last_modified = db.DateTimeProperty(auto_now = True)
 
+    def get_user(self):
+        user = User.by_id(int(self.user_id))
+        return user.name
+
 
 class Like(db.Model):
     post_id = db.StringProperty(required = True)
