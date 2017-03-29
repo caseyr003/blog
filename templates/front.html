@@ -30,7 +30,7 @@
             </div>
 
             <div class="post-like">
-               {% if user_id != '' %}
+               {% if user_id != '' and user_id != post.creator_id %}
 
                   {% if post.like_count(user_id)[1] %}
                      <form action="../unlike/{{post.key().id()}}" method="POST">
@@ -54,10 +54,14 @@
 
                   {% endif %}
                {% else %}
-                  <a class="like-btn like-btn-link" href="/login">
-                     <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
-                  </a>
-                  {{post.like_count(user_id)[0]}}
+                  {% if user_id == post.creator_id %}
+                     {{post.like_count(user_id)[0]}} Likes
+                  {% else %}
+                     <a class="like-btn like-btn-link" href="/login">
+                        <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+                     </a>
+                     {{post.like_count(user_id)[0]}}
+                  {% endif %}
                {% endif %}
             </div>
          </div>
