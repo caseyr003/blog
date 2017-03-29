@@ -13,7 +13,7 @@ body {
 
 .nav-login {
     font-size: 18px;
-    color: #387795;
+    color: #02a0ea;
     display: block;
     float: right;
     min-width: 100px;
@@ -22,13 +22,13 @@ body {
 }
 
 .login-link {
-   color: #387795;
+   color: #02a0ea;
     text-decoration: none;
     font-size: 18px;
 }
 
 .login-link:hover {
-   color: #60A7C8;
+   color: #3cc1ff;
     text-decoration: none;
 }
 
@@ -43,7 +43,7 @@ body {
 
 .edit-link:hover {
     text-decoration: underline;
-    color: #387795;
+    color: #02a0ea;
 }
 
 h2 {
@@ -62,7 +62,7 @@ input[type=submit] {
 }
 
 .nav-title {
-    color: #387795;
+    color: #02a0ea;
     font-size: 72px;
 }
 .nav-title:hover {
@@ -76,25 +76,27 @@ input[type=submit] {
 
 .post-title {
    font-size: 18px;
-   color: #6A6A6A;
+   color: #999;
    margin-bottom: 20px;
 
 }
 
 .post-title-link {
    font-size: 32px;
-   color: #387795;
+   color: #02a0ea;
    margin-right: 10px;
    transition: all 0.3s ease;
 }
 
 .post-title-link:hover {
-   color: #60A7C8;
+   color: #3cc1ff;
    text-decoration: none;
 }
 
-.post-date {
+.post-date,
+.post-comment-count {
     color: #999;
+    padding: 4px 0;
 
 }
 
@@ -111,7 +113,7 @@ input[type=submit] {
 }
 
 .comment-user {
-   color: #387795;
+   color: #02a0ea;
 }
 
 .comment-message {
@@ -137,7 +139,7 @@ input[type=submit] {
 }
 
 .create-post-link:hover {
-    color: #60A7C8;
+    color: #3cc1ff;
     font-size: 22px;
     cursor: pointer;
     text-decoration: none;
@@ -145,7 +147,7 @@ input[type=submit] {
 
 
 .post-like {
-   color: #387795;
+   color: #02a0ea;
    font-size: 16px;
 }
 .like-btn {
@@ -159,11 +161,14 @@ input[type=submit] {
    margin-left: 0;
    padding: 4px 6px 0 0;
 }
+.like-btn-link:hover {
+   text-decoration: none;
+}
 .like-btn:focus {
    outline: none;
 }
 .like-btn:hover {
-   color: #60A7C8;
+   color: #3cc1ff;
    cursor: pointer;
 }
 
@@ -172,7 +177,7 @@ input[type=submit] {
 }
 
 .cancel-link:hover {
-   color: #387795;
+   color: #02a0ea;
    text-decoration: none;
 }
 
@@ -205,7 +210,7 @@ input[type=submit] {
    position: relative;
    bottom: 6px;
    left: 2px;
-   color: #387795;
+   color: #02a0ea;
    background-color: transparent;
    border: none;
    font-size: 32px;
@@ -214,7 +219,7 @@ input[type=submit] {
    outline: none;
 }
 .comment-btn:hover {
-   color: #60A7C8;
+   color: #3cc1ff;
    cursor: pointer;
 }
 
@@ -253,7 +258,7 @@ select {
 input[type=submit] {
     width: 100%;
     font-size: 16px;
-    background-color: #387795;
+    background-color: #02a0ea;
     color: #fff;
     padding: 14px 20px;
     margin: 8px 0;
@@ -263,7 +268,7 @@ input[type=submit] {
 }
 
 input[type=submit]:hover {
-   background-color: #60A7C8;
+   background-color: #3cc1ff;
 }
 
 .new-blog-content {
@@ -276,7 +281,9 @@ input[type=submit]:hover {
    border-radius: 4px;
    box-sizing: border-box;
 }
-.register-container {
+.register-container,
+.login-container,
+.edit-container {
     border-radius: 8px;
     background-color: #fff;
     padding: 40px;
@@ -286,4 +293,6 @@ input[type=submit]:hover {
 
 .logo {
    margin: 0 0 20px 40px;
+   max-height: 120px;
+   width: auto;
 }

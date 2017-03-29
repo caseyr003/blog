@@ -22,7 +22,7 @@
             {{post.created.strftime("%b %d, %Y")}}
          </div>
 
-         <div class="post-date">
+         <div class="post-comment-count">
             {{post.comment_count()}} Comments
          </div>
 
@@ -57,10 +57,11 @@
                {{post.like_count(user_id)[0]}}
             {% endif %}
          </div>
-         <hr>
+
 
          <div class="comment-content">
             {% for comment in post.get_comments() %}
+               <hr>
                <div class="comment-user">
                   {{comment.get_user()}}
                </div>
@@ -77,13 +78,12 @@
                <div class="post-date">
                   {{comment.created.strftime("%b %d, %Y")}}
                </div>
-
-               <hr>
             {% endfor %}
          </div>
 
          {% if user_id != '' %}
             <div class="add-comment">
+               <hr>
                <form action="../newcomment/{{post.key().id()}}" method="post">
                   <textarea class="comment-text" name="content" placeholder="Leave a comment..."></textarea>
                   <button class="comment-btn" type="submit"><i class="fa fa-comments-o" aria-hidden="true"></i></button>

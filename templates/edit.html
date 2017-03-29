@@ -4,7 +4,7 @@
    {% if post.creator_id == user_id %}
 
       <div class="col-md-6 col-md-offset-3">
-         <div class="register-container">
+         <div class="edit-container">
             <form action="../delete/{{post.key().id()}}" method="POST">
                <div class="edit-title">
                   Edit Post
@@ -13,6 +13,7 @@
                   </button>
                </div>
             </form>
+
             <form method="post">
                <label for="title">Title</label>
                <input type="text" id="title" class="title" name="title" value="{{post.subject}}">
@@ -30,6 +31,7 @@
 
                <input type="submit" value="Submit">
             </form>
+            
             <a class="cancel-link" href="/post/{{post.key().id()}}">Cancel</a>
          </div>
       </div>
