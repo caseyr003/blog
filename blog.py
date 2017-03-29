@@ -14,6 +14,7 @@ template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
                                autoescape = True)
 
+# Set Secret
 secret = 'GLK37HU92HJ3K244LJS'
 
 
@@ -29,7 +30,7 @@ def check_secure_val(secure_val):
     if secure_val == make_secure_val(val):
         return val
 
-# Helper functions for Blog
+
 class BlogHandler(webapp2.RequestHandler):
     def write(self, *a, **kw):
         self.response.out.write(*a, **kw)
@@ -61,10 +62,6 @@ class BlogHandler(webapp2.RequestHandler):
         webapp2.RequestHandler.initialize(self, *a, **kw)
         uid = self.read_secure_cookie('user_id')
         self.user = uid and User.by_id(int(uid))
-
-def render_post(response, post):
-    response.out.write('<b>' + post.subject + '</b><br>')
-    response.out.write(post.content)
 
 
 # User encryption and validation functions
@@ -191,6 +188,7 @@ class Blog(BlogHandler):
 
         self.render('front.html', posts = posts, user_id = user_id)
 
+
 class PostPage(BlogHandler):
     def get(self, post_id):
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
@@ -254,18 +252,6 @@ class EditPage(BlogHandler):
             return
 
 
-class DeletePage(BlogHandler):
-    def post(self, post_id):
-        key = db.Key.from_path('Post', int(post_id), parent=blog_key())
-        post = db.get(key)
-        user_id = str(self.user.key().id())
-
-        # If user is the post user, Delete post
-        if user_id == post.creator_id:
-            post.delete()
-            return self.redirect('/')
-
-
 class EditCommentPage(BlogHandler):
     def get(self, comment_id):
         key = db.Key.from_path('Comment', int(comment_id),
@@ -300,16 +286,28 @@ class EditCommentPage(BlogHandler):
                 comment.put()
 
                 return self.redirect('/post/%s' % str(comment.post_id))
+
         # Else display error
         else:
             error = "Make sure all fields are complete"
             self.render("editcomment.html", comment = comment,
                         user_id = user_id, error = error)
 
-
         if not comment:
             self.error(404)
             return
+
+
+class DeletePage(BlogHandler):
+    def post(self, post_id):
+        key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+        post = db.get(key)
+        user_id = str(self.user.key().id())
+
+        # If user is the post user, Delete post
+        if user_id == post.creator_id:
+            post.delete()
+            return self.redirect('/')
 
 
 class DeleteCommentPage(BlogHandler):
@@ -325,6 +323,35 @@ class DeleteCommentPage(BlogHandler):
             return self.redirect('/post/%s' % str(post_id))
         else:
             self.redirect('/post/%s' % str(post_id))
+
+
+class NewPost(BlogHandler):
+    def get(self):
+        # If not logged in redirect to login page
+        if self.user:
+            self.render("newpost.html")
+        else:
+            self.redirect("/login")
+
+    def post(self):
+        if not self.user:
+            self.redirect('/')
+
+        # Get post information from form
+        subject = self.request.get('subject')
+        content = self.request.get('content')
+        creator_id = str(self.user.key().id())
+
+        # If input exists create post else show error
+        if subject and content:
+            p = Post(parent = blog_key(), subject = subject,
+                     content = content, creator_id = creator_id)
+            p.put()
+            self.redirect('/post/%s' % str(p.key().id()))
+        else:
+            error = "Please complete all fields"
+            self.render("newpost.html", subject=subject, content=content,
+                        error=error)
 
 
 class NewCommentPage(BlogHandler):
@@ -414,35 +441,6 @@ class RemoveLikePage(BlogHandler):
             self.redirect('/post/%s' % str(post.key().id()))
 
 
-class NewPost(BlogHandler):
-    def get(self):
-        # If not logged in redirect to login page
-        if self.user:
-            self.render("newpost.html")
-        else:
-            self.redirect("/login")
-
-    def post(self):
-        if not self.user:
-            self.redirect('/')
-
-        # Get post information from form
-        subject = self.request.get('subject')
-        content = self.request.get('content')
-        creator_id = str(self.user.key().id())
-
-        # If input exists create post else show error
-        if subject and content:
-            p = Post(parent = blog_key(), subject = subject,
-                     content = content, creator_id = creator_id)
-            p.put()
-            self.redirect('/post/%s' % str(p.key().id()))
-        else:
-            error = "Please complete all fields"
-            self.render("newpost.html", subject=subject, content=content,
-                        error=error)
-
-
 # Validation fuctions for register inputs
 USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
 def valid_username(username):
@@ -455,6 +453,7 @@ def valid_password(password):
 EMAIL_RE  = re.compile(r'^[\S]+@[\S]+\.[\S]+$')
 def valid_email(email):
     return not email or EMAIL_RE.match(email)
+
 
 class Signup(BlogHandler):
     def get(self):
@@ -495,6 +494,7 @@ class Signup(BlogHandler):
     def done(self, *a, **kw):
         raise NotImplementedError
 
+
 class Register(Signup):
     def done(self):
 
@@ -512,6 +512,7 @@ class Register(Signup):
             self.login(user)
             self.redirect('/')
 
+
 class Login(BlogHandler):
     def get(self):
         self.render('login-form.html')
@@ -527,6 +528,7 @@ class Login(BlogHandler):
         else:
             error = "Invalid Login"
             self.render('login-form.html', error = error)
+
 
 class Logout(BlogHandler):
     def get(self):

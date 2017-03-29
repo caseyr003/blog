@@ -1,36 +1,37 @@
 {% extends "base.html" %}
 
 {% block content %}
- <div class="col-md-6 col-md-offset-3">
-    <div class="register-container">
-      <h2>Signup</h2>
-      <form method="post">
-           <label for="username">Username</label>
-           <input type="text" id="username" name="username" value="{{username}}">
-           <div class="error">
-             {{error_username}}
-           </div>
+   <!-- Register Form -->
+   <div class="col-md-6 col-md-offset-3">
+      <div class="register-container">
+         <h2>Signup</h2>
+         <form method="post">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" value="{{username}}">
+            <div class="error">
+               {{error_username}}
+            </div>
 
-           <label for="password">Password</label>
-           <input type="password" id="password" name="password" value="">
-           <div class="error">
-             {{error_password}}
-           </div>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" value="">
+            <div class="error">
+               {{error_password}}
+            </div>
 
-           <label for="verify">Verify Password</label>
-           <input type="password" id="verify" name="verify" value="">
-           <div class="error">
-             {{error_verify}}
-           </div>
+            <label for="verify">Verify Password</label>
+            <input type="password" id="verify" name="verify" value="">
+            <div class="error">
+               {{error_verify}}
+            </div>
 
-           <label for="email">Email (Optional)</label>
-           <input type="text" id="email" name="email" value="{{email}}">
-           <div class="error">
-             {{error_email}}
-           </div>
+            <label for="email">Email (Optional)</label>
+            <input type="text" id="email" name="email" value="{{email}}">
+            <div class="error">
+               {{error_email}}
+            </div>
 
-           <input type="submit" value="Submit">
-      </form>
+            <input type="submit" value="Submit">
+         </form>
+      </div>
    </div>
-</div>
 {% endblock %}

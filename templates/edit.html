@@ -2,7 +2,7 @@
 
 {% block content %}
    {% if post.creator_id == user_id %}
-
+      <!-- Edit Post -->
       <div class="col-md-6 col-md-offset-3">
          <div class="edit-container">
             <form action="../delete/{{post.key().id()}}" method="POST">
@@ -31,7 +31,7 @@
 
                <input type="submit" value="Submit">
             </form>
-            
+
             <a class="cancel-link" href="/post/{{post.key().id()}}">Cancel</a>
          </div>
       </div>

@@ -22,13 +22,15 @@
          <div class="row">
             <div class="col-md-10 col-md-offset-1">
 
+               <!-- Title Logo -->
                <a href="/" class="nav-title">
                  <img class="logo" src="static/img/logo.png" alt="The Blog Logo">
                </a>
 
+               <!-- Login/Register -->
                <div class="nav-login">
                  {% if user %}
-                   {{user.name}} | <a class="login-link" href="/logout">Logout</a>
+                   Welcome {{user.name}} | <a class="login-link" href="/logout">Logout</a>
                  {% else %}
                    <a class="login-link" href="/login">Login</a>
                    |
@@ -40,6 +42,7 @@
          </div>
       </header>
 
+      <!-- Page Content -->
       <div class="container">
          <div class="row">
             <div class="col-md-12">
@@ -50,6 +53,7 @@
             </div>
          </div>
       </div>
+      
       <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
       <script src="../static/js/bootstrap.js"></script>
