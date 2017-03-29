@@ -114,7 +114,7 @@ input[type=submit]:hover {
 
 .post-content {
    margin-top: 5px;
-   font-size: 22px;
+   font-size: 18px;
    color: #6a6a6a;
    text-align: justify;
 }
@@ -307,4 +307,35 @@ input[type=submit]:hover {
 .edit-title {
    margin: 20px 0;
    font-size: 24px;
+}
+
+
+/* Mobile */
+@media (max-width: 600px) {
+   .logo {
+      max-height: 80px;
+   }
+
+   .nav-login {
+      float: none;
+      text-align: center;
+      margin: 10px auto;
+   }
+
+   .post-container {
+      margin: 20px 0;
+      padding: 20px;
+   }
+
+   .post-content {
+      font-size: 12px;
+   }
+   
+   .post-title {
+      font-size: 14px;
+   }
+
+   .post-title-link {
+      font-size: 24px;
+   }
 }
