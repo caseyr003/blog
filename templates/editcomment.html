@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-   {% if comment.user_id == user_id %}
+   {% if comment.user_key.key().id() == user.key().id() %}
       <!-- Edit Comment -->
       <div class="col-md-6 col-md-offset-3">
          <div class="edit-container">
@@ -29,7 +29,7 @@
                <input type="submit" value="Submit">
             </form>
 
-            <a class="cancel-link" href="/post/{{comment.post_id}}">Cancel</a>
+            <a class="cancel-link" href="/post/{{comment.post_key.key().id()}}">Cancel</a>
          </div>
       </div>
    {% endif %}

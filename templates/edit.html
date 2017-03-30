@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
-   {% if post.creator_id == user_id %}
+
+   {% if post.user_key.key().id() == user.key().id() %}
       <!-- Edit Post -->
       <div class="col-md-6 col-md-offset-3">
          <div class="edit-container">

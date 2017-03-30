@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+   <!-- Link to Create New Post -->
+   <div class="col-md-10 col-md-offset-1">
+      <a class="create-post-link" href="/newpost">Create a new post</a>
+   </div>
+
+   <!-- 404 Error Message -->
+   <div class="col-md-10 col-md-offset-1">
+      <div class="post-container">
+         <div class="post-heading">
+            <div class="post-title">
+               <h2>Sorry, the page you are looking for doesn't exist</h2>
+               <a class="post-title-link" href="/">Return to Blog</a>
+            </div>
+         </div>
+      </div>
+   </div>
+{% endblock %}

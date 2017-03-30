@@ -11,7 +11,7 @@
             <input type="text" id="title" name="subject" value="{{subject}}">
 
             <label for="content">Blog</label>
-            <textarea class="new-blog-content" id="content" name="content">{{content}}</textarea>
+            <textarea class="new-blog-content" id="content" name="content">{{content | safe}}</textarea>
             <div class="error">
                {{error}}
             </div>

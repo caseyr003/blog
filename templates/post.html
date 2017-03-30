@@ -8,8 +8,10 @@
             <div class="post-title">
                <a class="post-title-link" href="/post/{{post.key().id()}}">{{post.subject}}</a>
                {{post.get_user()}}
-               {% if post.creator_id == user_id %}
-                  <a class="edit-link" href="/edit/{{post.key().id()}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+               {% if user %}
+                  {% if post.user_key.key().id() == user.key().id() %}
+                     <a class="edit-link" href="/edit/{{post.key().id()}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                  {% endif %}
                {% endif %}
             </div>
          </div>
@@ -27,41 +29,39 @@
          </div>
 
          <div class="post-like">
-            {% if user_id != '' and user_id != post.creator_id %}
-
-               {% if post.like_count(user_id)[1] %}
+            {% if user %}
+               {% if post.like_count(user.key().id())[1] and user.key().id() != post.user_key.key().id() %}
                   <form action="../unlike/{{post.key().id()}}" method="POST">
                      <div class="form-group row">
                         <button class="like-btn" type="submit" value="">
                            <i class="fa fa-thumbs-up" aria-hidden="true"></i>
                         </button>
-                        {{post.like_count(user_id)[0]}}
+                        {{post.like_count(user.key().id())[0]}}
                      </div>
                   </form>
 
-               {% else %}
+               {% elif not post.like_count(user.key().id())[1] and user.key().id() != post.user_key.key().id() %}
                   <form action="../like/{{post.key().id()}}" method="POST">
                      <div class="form-group row">
                         <button class="like-btn" type="submit">
                            <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
                         </button>
-                        {{post.like_count(user_id)[0]}}
+                        {{post.like_count(user.key().id())[0]}}
                      </div>
                   </form>
 
+               {% elif user.key().id() == post.user_key.key().id() %}
+                  {{post.like_count(user.key().id())[0]}} Likes
                {% endif %}
+
             {% else %}
-               {% if user_id == post.creator_id %}
-                  {{post.like_count(user_id)[0]}} Likes
-               {% else %}
-                  <a class="like-btn like-btn-link" href="/login">
-                     <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
-                  </a>
-                  {{post.like_count(user_id)[0]}}
-               {% endif %}
+               <a class="like-btn like-btn-link" href="/login">
+                  <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+               </a>
+               {{post.like_count('')[0]}}
+
             {% endif %}
          </div>
-
 
          <div class="comment-content">
             {% for comment in post.get_comments() %}
@@ -72,10 +72,12 @@
 
                <div class="comment-message">
                   {{comment.content}}
-                  {% if comment.user_id == user_id %}
-                     <a class="edit-link" href="/editcomment/{{comment.key().id()}}">
-                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                     </a>
+                  {% if user %}
+                     {% if comment.user_key.key().id() == user.key().id() %}
+                        <a class="edit-link" href="/editcomment/{{comment.key().id()}}">
+                           <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                        </a>
+                     {% endif %}
                   {% endif %}
                </div>
 
@@ -85,7 +87,7 @@
             {% endfor %}
          </div>
 
-         {% if user_id != '' %}
+         {% if user %}
             <div class="add-comment">
                <hr>
                <form action="../newcomment/{{post.key().id()}}" method="post">
