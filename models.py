@@ -1,9 +1,15 @@
 from google.appengine.ext import db
+import random
 import hashlib
+from string import letters
 
 
 def users_key(group = 'default'):
     return db.Key.from_path('users', group)
+
+# User encryption and validation functions
+def make_salt(length = 5):
+    return ''.join(random.choice(letters) for x in xrange(length))
 
 def valid_pw(name, password, h):
     salt = h.split(',')[0]

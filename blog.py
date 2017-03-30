@@ -1,9 +1,6 @@
 import os
 import re
-import random
-import hashlib
 import hmac
-from string import letters
 
 import webapp2
 import jinja2
@@ -66,20 +63,6 @@ class BlogHandler(webapp2.RequestHandler):
         uid = self.read_secure_cookie('user_id')
         self.user = uid and User.by_id(int(uid))
 
-
-# User encryption and validation functions
-def make_salt(length = 5):
-    return ''.join(random.choice(letters) for x in xrange(length))
-
-def make_pw_hash(name, pw, salt = None):
-    if not salt:
-        salt = make_salt()
-    h = hashlib.sha256(name + pw + salt).hexdigest()
-    return '%s,%s' % (salt, h)
-
-def valid_pw(name, password, h):
-    salt = h.split(',')[0]
-    return h == make_pw_hash(name, password, salt)
 
 def blog_key(name = 'default'):
     return db.Key.from_path('blogs', name)
