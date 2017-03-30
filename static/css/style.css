@@ -173,6 +173,9 @@ input[type=submit]:hover {
    transition: all 0.3s ease;
 }
 
+.create-post-container {
+   margin: 20px;
+}
 
 /* Buttons */
 .like-btn {
@@ -263,17 +266,27 @@ input[type=submit]:hover {
 }
 
 .create-post-link {
-   margin-left: 20px;
+   box-shadow: 7px 10px 20px 0px rgba(48,66,72,0.25);
+   border-radius: 4px;
+   margin-left: 80px;
    color: #fff;
-   font-size: 20px;
+   font-size: 16px;
+   padding: 16px;
+   background-color: #02a0ea;
    transition: all 0.3s ease;
 }
 
 .create-post-link:hover {
-   color: #3cc1ff;
-   font-size: 22px;
+   box-shadow: 2px 4px 8px 0px rgba(48,66,72,0.4);
+   color: #fff;
    cursor: pointer;
    text-decoration: none;
+}
+
+@media (max-width: 991px) {
+   .create-post-link {
+      margin-left: 0;
+   }
 }
 
 .like-btn-link {
@@ -330,7 +343,7 @@ input[type=submit]:hover {
    .post-content {
       font-size: 12px;
    }
-   
+
    .post-title {
       font-size: 14px;
    }
