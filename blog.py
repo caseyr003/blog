@@ -7,7 +7,7 @@ import jinja2
 
 from google.appengine.ext import db
 
-from models import User, Post, Comment, Like
+from test import User, Post, Comment, Like
 from decorators import post_exists, comment_exists, logged_in
 
 
