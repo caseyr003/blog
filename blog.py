@@ -232,10 +232,13 @@ class NewCommentHandler(BlogHandler):
 
 
 class LikeHandler(BlogHandler):
-    @logged_in
     def post(self, post_id):
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
         post = db.get(key)
+
+        # If not logged in redirect to login page
+        if not self.user:
+            self.redirect('/login')
 
         # If post doesn't exist redirect to home page
         if not post:
@@ -252,10 +255,13 @@ class LikeHandler(BlogHandler):
 
 
 class RemoveLikeHandler(BlogHandler):
-    @logged_in
     def post(self, post_id):
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
         post = db.get(key)
+
+        # If not logged in redirect to login page
+        if self.user:
+            self.redirect('/login')
 
         # If post doesn't exist redirect to home page
         if post:
