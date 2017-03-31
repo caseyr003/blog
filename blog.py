@@ -8,6 +8,7 @@ import jinja2
 from google.appengine.ext import db
 
 from models import User, Post, Comment, Like
+from decorators import post_exists, comment_exists, logged_in
 
 
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
@@ -76,46 +77,27 @@ class BlogHandler(BlogHandler):
 
 
 class PostHandler(BlogHandler):
-    def get(self, post_id):
-        key = db.Key.from_path('Post', int(post_id), parent=blog_key())
-        post = db.get(key)
-
-        # If post doesn't exist, 404 error
-        if not post:
-            self.error(404)
-            return
-
+    @post_exists
+    def get(self, post_id, post):
         self.render("post.html", post = post)
 
 
 class EditHandler(BlogHandler):
-    def get(self, post_id):
-        key = db.Key.from_path('Post', int(post_id), parent = blog_key())
-        post = db.get(key)
+    @post_exists
+    def get(self, post_id, post):
 
         # If not logged in redirect to home page
         if not self.user:
             self.redirect('/login')
-
-        # If post doesn't exist, 404 error
-        if not post:
-            self.error(404)
-            return
 
         self.render("edit.html", post = post)
 
-    def post(self, post_id):
-        key = db.Key.from_path('Post', int(post_id), parent = blog_key())
-        post = db.get(key)
+    @post_exists
+    def post(self, post_id, post):
 
         # If not logged in redirect to home page
         if not self.user:
             self.redirect('/login')
-
-        # If post doesn't exist, 404 error
-        if not post:
-            self.error(404)
-            return
 
         # Get post information from form
         title = self.request.get('title')
@@ -138,35 +120,21 @@ class EditHandler(BlogHandler):
 
 
 class EditCommentHandler(BlogHandler):
-    def get(self, comment_id):
-        key = db.Key.from_path('Comment', int(comment_id),
-                               parent = blog_key())
-        comment = db.get(key)
+    @comment_exists
+    def get(self, comment_id, comment):
 
         # If not logged in redirect to login page
         if not self.user:
             self.redirect('/login')
-
-        # If comment doesn't exist, 404 error
-        if not comment:
-            self.error(404)
-            return
 
         self.render("editcomment.html", comment = comment)
 
-    def post(self, comment_id):
-        key = db.Key.from_path('Comment', int(comment_id),
-                               parent = blog_key())
-        comment = db.get(key)
+    @comment_exists
+    def post(self, comment_id, comment):
 
         # If not logged in redirect to login page
         if not self.user:
             self.redirect('/login')
-
-        # If comment doesn't exist, 404 error
-        if not comment:
-            self.error(404)
-            return
 
         # Get comment information from form
         content = self.request.get('content')
@@ -187,18 +155,12 @@ class EditCommentHandler(BlogHandler):
 
 
 class DeleteHandler(BlogHandler):
-    def post(self, post_id):
-        key = db.Key.from_path('Post', int(post_id), parent=blog_key())
-        post = db.get(key)
+    @post_exists
+    def post(self, post_id, post):
 
         # If not logged in redirect to login page
         if not self.user:
             self.redirect('/login')
-
-        # If post doesn't exist, 404 error
-        if not post:
-            self.error(404)
-            return
 
         # If user is the post user, Delete post
         if self.user.key().id() == post.user_key.key().id():
@@ -207,19 +169,14 @@ class DeleteHandler(BlogHandler):
 
 
 class DeleteCommentHandler(BlogHandler):
-    def post(self, comment_id):
-        key = db.Key.from_path('Comment', int(comment_id), parent=blog_key())
-        comment = db.get(key)
+    @comment_exists
+    def post(self, comment_id, comment):
 
         # If not logged in redirect to login page
         if not self.user:
             self.redirect('/login')
 
-        # If comment doesn't exist, redirect to home page
-        if comment:
-            post_id = comment.post_key.key().id()
-        else:
-            self.redirect('/')
+        post_id = comment.post_key.key().id()
 
         # If user is the comment user, Delete comment
         if self.user.key().id() == comment.user_key.key().id():
@@ -230,17 +187,12 @@ class DeleteCommentHandler(BlogHandler):
 
 
 class NewPostHandler(BlogHandler):
+    @logged_in
     def get(self):
-        # If not logged in redirect to login page
-        if self.user:
-            self.render("newpost.html")
-        else:
-            self.redirect("/login")
+        self.render("newpost.html")
 
+    @logged_in
     def post(self):
-        # If not logged in redirect to login page
-        if not self.user:
-            self.redirect('/login')
 
         # Get post information from form
         subject = self.request.get('subject')
@@ -259,25 +211,12 @@ class NewPostHandler(BlogHandler):
 
 
 class NewCommentHandler(BlogHandler):
-    def get(self, post_id):
-        if self.user:
-            self.render("/")
-        else:
-            self.redirect("/login")
-
-    def post(self, post_id):
-        key = db.Key.from_path('Post', int(post_id), parent=blog_key())
-        post = db.get(key)
+    @post_exists
+    def post(self, post_id, post):
 
         # If not logged in redirect to login page
         if not self.user:
             self.redirect('/login')
-
-        # If post doesn't exist redirect to home page
-        if post:
-            post_key = post.key()
-        else:
-            self.redirect('/')
 
         # Get comment information from form
         content = self.request.get('content')
@@ -285,7 +224,7 @@ class NewCommentHandler(BlogHandler):
         # If input exists create comment else redirect to post
         if content:
             comment = Comment(parent = blog_key(), content = content,
-                              post_key = post_key, user_key = self.user.key())
+                              post_key = post.key(), user_key = self.user.key())
             comment.put()
             self.redirect('/post/%s' % str(post.key().id()))
         else:
@@ -293,19 +232,10 @@ class NewCommentHandler(BlogHandler):
 
 
 class LikeHandler(BlogHandler):
-    def get(self, post_id):
-        if self.user:
-            self.render("/")
-        else:
-            self.redirect("/login")
-
+    @logged_in
     def post(self, post_id):
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
         post = db.get(key)
-
-        # If not logged in redirect to login page
-        if not self.user:
-            self.redirect('/login')
 
         # If post doesn't exist redirect to home page
         if not post:
@@ -322,19 +252,10 @@ class LikeHandler(BlogHandler):
 
 
 class RemoveLikeHandler(BlogHandler):
-    def get(self, post_id):
-        if self.user:
-            self.render("/")
-        else:
-            self.redirect("/login")
-
+    @logged_in
     def post(self, post_id):
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
         post = db.get(key)
-
-        # If not logged in redirect to login page
-        if self.user:
-            self.redirect('/login')
 
         # If post doesn't exist redirect to home page
         if post:

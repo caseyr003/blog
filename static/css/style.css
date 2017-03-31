@@ -44,6 +44,17 @@ input[type=submit]:hover {
    background-color: #3cc1ff;
 }
 
+input[type=submit]:visited,
+a:visited {
+   text-decoration: none;
+}
+
+input[type=submit]:focus,
+a:focus {
+   text-decoration: none;
+   outline: none;
+}
+
 
 /* Main Nav */
 .nav-login {

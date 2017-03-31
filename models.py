@@ -89,7 +89,6 @@ class Post(db.Model):
         # Check if user liked the post and return count
         for like in likes:
             count += 1
-            print(like.user_key.key().id())
             if user_id == like.user_key.key().id():
                 liked = True
 
