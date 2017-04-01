@@ -19,7 +19,8 @@ class NewCommentHandler(BlogHandler):
         # If input exists create comment else redirect to post
         if content:
             comment = Comment(parent = blog_key(), content = content,
-                              post_key = post.key(), user_key = self.user.key())
+                              post_key = post.key(),
+                              user_key = self.user.key())
             comment.put()
 
             self.redirect('/post/%s' % str(post.key().id()))
