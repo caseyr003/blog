@@ -50,3 +50,29 @@ def comment_exists(function):
             return
 
     return wrapper
+
+
+def user_post(function):
+    @wraps(function)
+    def wrapper(self, post_id, post):
+
+        # Redirect to home if user doesn't own post
+        if self.user.key().id() == post.user_key.key().id():
+            return function(self, post_id, post)
+        else:
+            self.redirect('/')
+
+    return wrapper
+
+
+def user_comment(function):
+    @wraps(function)
+    def wrapper(self, comment_id, comment):
+
+        # Redirect to home if user doesn't own comment
+        if self.user.key().id() == comment.user_key.key().id():
+            return function(self, comment_id, comment)
+        else:
+            self.redirect('/')
+
+    return wrapper

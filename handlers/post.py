@@ -1,6 +1,6 @@
 from google.appengine.ext import db
 from models import User, Post
-from decorators import post_exists, logged_in
+from decorators import post_exists, logged_in, user_post
 from main import BlogHandler
 
 def blog_key(name = 'default'):
@@ -40,26 +40,27 @@ class PostHandler(BlogHandler):
 class EditHandler(BlogHandler):
     @logged_in
     @post_exists
+    @user_post
     def get(self, post_id, post):
 
         self.render("edit.html", post = post)
 
     @logged_in
     @post_exists
+    @user_post
     def post(self, post_id, post):
 
         # Get post information from form
         title = self.request.get('title')
         content = self.request.get('content')
 
-        # If title/content exists and user is current user, Edit Post
+        # If title/content exists edit post
         if title and content:
-            if self.user.key().id() == post.user_key.key().id():
-                post.subject = title
-                post.content = content
-                post.put()
+            post.subject = title
+            post.content = content
+            post.put()
 
-                return self.redirect('/post/%s' % str(post.key().id()))
+            return self.redirect('/post/%s' % str(post.key().id()))
         # Else display error
         else:
             error = "Make sure all fields are complete"
@@ -69,9 +70,8 @@ class EditHandler(BlogHandler):
 class DeleteHandler(BlogHandler):
     @logged_in
     @post_exists
+    @user_post
     def post(self, post_id, post):
 
-        # If user is the post user, Delete post
-        if self.user.key().id() == post.user_key.key().id():
-            post.delete()
-            return self.redirect('/')
+        post.delete()
+        return self.redirect('/')

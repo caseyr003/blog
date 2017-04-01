@@ -1,6 +1,6 @@
 from google.appengine.ext import db
 from models import User, Post, Comment
-from decorators import post_exists, comment_exists, logged_in
+from decorators import post_exists, comment_exists, logged_in, user_comment
 from main import BlogHandler
 
 
@@ -30,24 +30,25 @@ class NewCommentHandler(BlogHandler):
 class EditCommentHandler(BlogHandler):
     @logged_in
     @comment_exists
+    @user_comment
     def get(self, comment_id, comment):
 
         self.render("editcomment.html", comment = comment)
 
     @logged_in
     @comment_exists
+    @user_comment
     def post(self, comment_id, comment):
 
         # Get comment information from form
         content = self.request.get('content')
 
-        # If comment exists and user is current user, Edit Comment
+        # If content exists edit comment
         if content:
-            if self.user.key().id() == comment.user_key.key().id():
-                comment.content = content
-                comment.put()
+            comment.content = content
+            comment.put()
 
-                return self.redirect('/post/%s' % str(comment.post_key.key().id()))
+            return self.redirect('/post/%s' % str(comment.post_key.key().id()))
         # Else display error
         else:
             error = "Make sure all fields are complete"
@@ -57,14 +58,7 @@ class EditCommentHandler(BlogHandler):
 class DeleteCommentHandler(BlogHandler):
     @logged_in
     @comment_exists
+    @user_comment
     def post(self, comment_id, comment):
-
-        post_id = comment.post_key.key().id()
-
-        # If user is the comment user, Delete comment
-        if self.user.key().id() == comment.user_key.key().id():
-            comment.delete()
-
-            return self.redirect('/post/%s' % str(post_id))
-        else:
-            self.redirect('/post/%s' % str(post_id))
+        comment.delete()
+        return self.redirect('/post/%s' % str(comment.post_key.key().id()))
