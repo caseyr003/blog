@@ -15,7 +15,7 @@ class LikeHandler(BlogHandler):
 
         # If user made post, don't allow them to like it
         if self.user.key().id() == post.user_key.key().id():
-            self.redirect('/post/%s' % str(post.key().id()))
+            return self.redirect('/post/%s' % str(post.key().id()))
 
         # Retrieve likes by the user for the post
         likes = Like.all()
@@ -23,9 +23,7 @@ class LikeHandler(BlogHandler):
         likes.filter("user_key =", self.user.key())
 
         # Check if user already liked the post
-        liked = False
-        for like in likes:
-            liked = True
+        liked = likes.count() > 0
 
         # If user hasn't liked, create like else redirect to post page
         if not liked:
